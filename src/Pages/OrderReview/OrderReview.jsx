@@ -6,6 +6,7 @@ import OrderReviewCard from './OrderReviewCard';
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { PiArrowBendUpLeftThin } from "react-icons/pi";
 import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 
 const OrderReview = () => {
 
@@ -13,16 +14,28 @@ const OrderReview = () => {
     const { user } = useContext(AuthContext);
     // console.log(user)
     const [orders, setOrders] = useState([]);
-    console.log(orders)
+    const navigate = useNavigate();
 
 
 
-    const url = `http://localhost:5000/orders?email=${user.email}`
+    const url = `https://car-doctor-server-ten-virid.vercel.app/orders?email=${user.email}`
 
     useEffect(() => {
-        fetch(url)
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                authorization: `Bearer ${localStorage.getItem('car-access-token')}`
+            }
+        })
             .then(res => res.json())
-            .then(data => setOrders(data))
+            .then(data => {
+                if(!data.error){
+                    setOrders(data)
+                }
+                else{
+                    navigate('/')
+                }
+            })
     }, []);
 
 
@@ -38,7 +51,7 @@ const OrderReview = () => {
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`http://localhost:5000/orders/${id}`, {
+                fetch(`https://car-doctor-server-ten-virid.vercel.app/orders/${id}`, {
                     method: 'DELETE'
                 })
                     .then(res => res.json())
@@ -61,7 +74,7 @@ const OrderReview = () => {
     }
 
     const handleupdateOrder = (id) =>{
-        fetch(`http://localhost:5000/orders/${id}`, {
+        fetch(`https://car-doctor-server-ten-virid.vercel.app/orders/${id}`, {
             method: 'PATCH',
             headers: {
                 'content-type': 'application/json'

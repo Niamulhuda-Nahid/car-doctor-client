@@ -9,7 +9,7 @@ import { AuthContext } from '../../providers/AuthProvider';
 
 const Register = () => {
 
-    const {createUser, profileUpdate} = useContext(AuthContext);
+    const {createUser, profileUpdate, googleSignIn} = useContext(AuthContext);
     const navigate = useNavigate();
     
     const hndleCreateUser = (event) =>{
@@ -35,6 +35,17 @@ const Register = () => {
             navigate('/')
         })
         .catch(error=> {
+            console.log(error.message)
+        })
+    }
+
+    const handleGoogleSignUp = () =>{
+        googleSignIn()
+        .then(result => {
+            console.log(result.user)
+            navigate('/')
+        })
+        .catch(error => {
             console.log(error.message)
         })
     }
@@ -77,7 +88,7 @@ const Register = () => {
                             <div className='flex justify-center items-center gap-5 mb-12'>
                                 <button className='text-2xl text-[#3B5998] bg-base-200 p-3 rounded-full'><FaFacebookF className='' /></button>
                                 <button className='text-2xl text-[#0A66C2] bg-base-200 p-3 rounded-full'><FaLinkedinIn /></button>
-                                <button className='text-2xl bg-base-200 p-3 rounded-full'> <FcGoogle /></button>
+                                <button onClick={handleGoogleSignUp} className='text-2xl bg-base-200 p-3 rounded-full'> <FcGoogle /></button>
                             </div>
                             <p className='text-center text-lg font-medium mb-7'>Already have an account? <Link to='/login' className='text-[#FF3811]'>Login</Link></p>
                         </div>
